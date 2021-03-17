@@ -1,0 +1,12 @@
+{% extends 'halls/base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>{{ hall.title }}</h2>
+            <h4 class="text-muted">{{ hall.user.username }}</h4>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}

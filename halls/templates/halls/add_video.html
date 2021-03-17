@@ -1,0 +1,73 @@
+{% extends 'halls/base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>Add Video To {{ hall.title }}</h2>
+            <form method="post" id="submit_video">
+            {% csrf_token %}
+            {% load widget_tweaks %}
+            {% for field in form %}
+                <div class="form-group {% if field.errors %}alert alert-danger{% endif %}">
+                {{ field.errors }}
+                {{ field.label_tag }}
+                {% render_field field class="form-control" %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Add</button>
+            </form>
+            <h2>Or</h2>
+            <form>
+            {% csrf_token %}
+                {% for field in search_form %}
+                <div class="form-group">
+                {{ field.errors }}
+                {{ field.label_tag }}
+                {% render_field field class="form-control" %}
+                </div>
+            {% endfor %}
+            </form>
+            <!----use ajax to search for results after typing has stopped for a few seconds-->
+            <div id="search_results">
+                <script>
+                    var delayTimer;
+                    $('#id_search_term').keyup(function() {
+                        clearTimeout(delayTimer);
+                        $('#search_results').text('loading...');
+                        delayTimer = setTimeout(function(){
+                            var text = $('#id_search_term').val();
+                            // ajax request to get a list of videos related to the search bar input
+                            $.ajax({
+                                url: '/video/search',
+                                data: {
+                                    'search_term' : text
+                                },
+                                dataType: 'json',
+                                success: function(data) {
+                                    var results = '';
+                                    $('#search_results').text('');
+                                    results += '<div class="row">';
+                                    data['items'].forEach(function(video){
+                                        results += '<div class="col-md-4 mt-3"><div class="card mb-4 shadow-sm">';
+                                        results += '<iframe width="100%" height="225" src="https://www.youtube.com/embed/' + video['id']['videoId'] + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+                                        results += '<div class="card-body"><p class="card-text">'+ video['snippet']['title'] +'</p>';
+                                        // passes the video id into the addvideo function 
+                                        results += '<a href="#" class="btn btn-primary" onclick="addVideo(\'' + video['id']['videoId'] + '\')">Add</a></div></div></div>';
+                                    });
+                                    results += '</div>';
+                                    $('#search_results').append(results);
+                                }
+                            });
+                        }, 2000);
+                    });
+                    // function to submit the add video via the addvideo view which the id is auto filled by this function
+                    function addVideo(video_id){
+                        $('#id_url').val('https://www.youtube.com/watch?v=' + video_id);
+                        $('#submit_video').submit();
+                    };
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

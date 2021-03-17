@@ -1,0 +1,13 @@
+{
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "python.languageServer": "Jedi",
+    "python.pythonPath": "C:\\Users\\craig\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
+    "python.linting.pycodestyleEnabled": false,
+    "python.linting.pylintPath": "C:\\Users\\craig\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
+    "python.linting.pylintArgs": ["--load-plugins=pylint_django", ],
+    "python.analysis.disabled": [
+        "unresolved-import"
+    ],
+    
+}
